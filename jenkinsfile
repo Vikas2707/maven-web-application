@@ -1,0 +1,45 @@
+node{
+
+ def mavenHome = tool name: "maven3.8.2"
+
+      echo "GitHub BranhName ${env.BRANCH_NAME}"
+      echo "Jenkins Job Number ${env.BUILD_NUMBER}"
+      echo "Jenkins Node Name ${env.NODE_NAME}"
+  
+      echo "Jenkins Home ${env.JENKINS_HOME}"
+      echo "Jenkins URL ${env.JENKINS_URL}"
+      echo "JOB Name ${env.JOB_NAME}"
+
+  stage('checkoutcode')
+   {
+git branch: 'development ', credentialsId: '0209306d-c736-4442-8ef4-b312bb009fe2', url: 'https://github.com/Vikas2707/maven-web-application.git'
+   }
+
+  stage('Build')
+   {
+    sh "${mavenHome}/bin/mvn clean package"
+   }
+
+   stage('SonarQubereport'){
+   sh "${mavenHome}/bin/mvn clean sonar:sonar"
+   }
+
+   stage('uploadartifactintoNexus'){
+   sh "${mavenHome}/bin/mvn clean deploy"
+   }
+   
+   stage('deployappintoTomCatserver')
+  {
+  sshagent(['c68b766c-7bfe-42da-9f2d-9bdd89fc6843']) {
+   sh "scp -o StrictHostKeyChecking=no target/maven-web-application.war ec2-user@13.233.132.121:/opt/apache-tomcat-9.0.52/webapps/"
+  }
+  }
+   stage('sendemailnotification'){
+    emailext body: '''Build Over...!!
+
+regards
+Vikas''', subject: 'Build Over...!!', to: 'vikasmalasane@gmail.com'
+  }
+
+
+  }
