@@ -19,11 +19,12 @@ git branch: 'development ', credentialsId: '0209306d-c736-4442-8ef4-b312bb009fe2
    {
     sh "${mavenHome}/bin/mvn clean package"
    }
-
+   /*
    stage('SonarQubereport'){
    sh "${mavenHome}/bin/mvn clean sonar:sonar"
    }
-
+   */
+   
    stage('uploadartifactintoNexus'){
    sh "${mavenHome}/bin/mvn clean deploy"
    }
