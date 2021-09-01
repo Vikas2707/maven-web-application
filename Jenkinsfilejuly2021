@@ -28,13 +28,14 @@ git branch: 'development ', credentialsId: '0209306d-c736-4442-8ef4-b312bb009fe2
    stage('uploadartifactintoNexus'){
    sh "${mavenHome}/bin/mvn clean deploy"
    }
-   
+   /*
    stage('deployappintoTomCatserver')
   {
   sshagent(['c68b766c-7bfe-42da-9f2d-9bdd89fc6843']) {
    sh "scp -o StrictHostKeyChecking=no target/maven-web-application.war ec2-user@13.233.132.121:/opt/apache-tomcat-9.0.52/webapps/"
   }
   }
+  */
    stage('sendemailnotification'){
     emailext body: '''Build Over...!!
 
